@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.11.2",
+    "@supabase/supabase-js": "^2.90.1",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.12.0"
+  }
+}

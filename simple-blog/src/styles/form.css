@@ -1,0 +1,29 @@
+.blog-form input,
+.blog-form textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.blog-form textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.save-btn {
+  background-color: #16a34a;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 5px;
+}
+
+.delete-btn {
+  background-color: #dc2626;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 5px;
+}
