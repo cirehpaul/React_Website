@@ -6,6 +6,7 @@ import Register from './login/register';
 import Blogs from './pages/blogs';
 import CreateBlog from './pages/createBlog';
 import type { RootState } from './store/store';
+import ProtectedRoute from './route/protectedRoute';
 
 export default function App() {
   const user = useSelector((state: RootState) => state.auth.user); // ✅ inside component
@@ -22,7 +23,11 @@ export default function App() {
       />
       <Route
         path="/blogs"
-        element={user ? <Blogs /> : <Navigate to="/login" replace />}
+        element={
+          <ProtectedRoute>
+            <Blogs />
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/blogs/create"

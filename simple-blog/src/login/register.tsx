@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../store/store'; 
-import { register } from '../store/authSlice';
 import { useNavigate } from 'react-router-dom';
+import type { AppDispatch } from '../store/store';
+import { register } from '../feature/authThunks';
 import '../styles/register.css';
 
 const Register: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>(); 
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -14,72 +14,114 @@ const Register: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const isGmail = email.endsWith('@gmail.com');
-  const isPasswordMatch = password === confirmPassword && password !== '';
-  const isDisabled = !isGmail || !isPasswordMatch;
+  const isGmailValid = email.endsWith('@gmail.com');
+  const passwordsMatch = password === confirmPassword;
+
+  const isFormValid =
+    email &&
+    password &&
+    confirmPassword &&
+    isGmailValid &&
+    passwordsMatch;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
 
-    if (!isGmail) {
-      setError('Email must be a Gmail address');
+    if (!isGmailValid) {
+      setError('Only Gmail addresses are allowed');
       return;
     }
 
-    if (!isPasswordMatch) {
+    if (!passwordsMatch) {
       setError('Passwords do not match');
       return;
     }
 
     try {
-      const result = await dispatch(register({ email, password })).unwrap();
-      setSuccess('Account created successfully!');
+      setLoading(true);
+      await dispatch(register({ email, password })).unwrap();
+
+      setSuccess('Account created successfully! Redirecting to login...');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
-      setTimeout(() => navigate('/login'), 1500);
+
+      setTimeout(() => {
+        navigate('/login', { state: { registered: true } });
+      }, 1500);
     } catch (err: any) {
-      setError(err.message || 'Registration failed');
+      setError(err?.message || 'Registration failed');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="register-container">
-      <h2>Create Account</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        {error && <p className="error">{error}</p>}
-        {success && <p className="success">{success}</p>}
-        <button type="submit" disabled={isDisabled}>
-          Register
-        </button>
-      </form>
-      <p>
-        Already have an account?{' '}
-        <span className="link" onClick={() => navigate('/login')}>
-          Login
-        </span>
-      </p>
+    <div className="auth-page">
+      <div className="register-container">
+        <h2>Create Account</h2>
+
+        <form onSubmit={handleSubmit} noValidate>
+          {/* Email */}
+          <div className="form-group">
+            <input
+              type="email"
+              placeholder="Gmail address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value.trim())}
+              required
+            />
+            {email && !isGmailValid && (
+              <p className="error">Only Gmail addresses are allowed</p>
+            )}
+          </div>
+
+          {/* Password */}
+          <div className="form-group">
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Confirm Password */}
+          <div className="form-group">
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+            {confirmPassword && !passwordsMatch && (
+              <p className="error">Passwords do not match</p>
+            )}
+          </div>
+
+          {/* Global Messages */}
+          {error && <p className="error">{error}</p>}
+          {success && <p className="success">{success}</p>}
+
+          {/* Submit */}
+          <button type="submit" disabled={!isFormValid || loading}>
+            {loading ? 'Creating account...' : 'Register'}
+          </button>
+        </form>
+
+        <p className="form-toggle">
+          Already have an account?{' '}
+          <span className="register-link" onClick={() => navigate('/login')}>
+            Login
+          </span>
+        </p>
+      </div>
     </div>
   );
 };

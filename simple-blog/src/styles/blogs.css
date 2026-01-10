@@ -1,65 +1,204 @@
-.blogs-container {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 1rem;
+/* =========================
+   GLOBAL RESET (FULLSCREEN)
+========================= */
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
 }
 
-.blogs-header {
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+/* =========================
+   PAGE LAYOUT
+========================= */
+.blogs-page {
+  width: 100vw;
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+/* =========================
+   HEADER (FULL WIDTH BAR)
+========================= */
+.header {
+  width: 100%;
+  height: 70px;
+  background: linear-gradient(to right, #3f7f73, #5aa497);
+  display: flex;
+  align-items: center;
   justify-content: space-between;
+  padding: 0 32px;
+}
+
+.header .name {
+  color: white;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.header .actions {
+  display: flex;
+  gap: 12px;
+}
+
+.header button {
+  background: white;
+  color: #2f6f64;
+  border: 2px solid #2f6f64;
+  border-radius: 22px;
+  padding: 6px 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.header button:hover {
+  background: #2f6f64;
+  color: white;
+}
+
+/* =========================
+   PAGE TITLE
+========================= */
+.blog-page-title {
+  text-align: center;
+  font-size: 30px;
+  margin: 32px 0 8px;
+  font-weight: bold;
+}
+
+/* =========================
+   BLOG CARD SECTION
+========================= */
+.blog-container {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 40px;
+}
+
+/* =========================
+   BLOG CARD (MATCH IMAGE)
+========================= */
+.blog-card {
+  width: 260px;
+  height: 320px;
+  border: 3px solid #222;
+  border-radius: 22px;
+  background: #fff;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
-.action-buttons button {
-  margin-left: 0.5rem;
-  padding: 0.4rem 0.8rem;
+/* Fake image placeholder look */
+.blog-card::before {
+  content: "";
+  width: 100%;
+  height: 140px;
+  border-radius: 14px;
+  background: linear-gradient(#cdeefd, #eaf6ff);
+  margin-bottom: 16px;
+}
+
+/* Title */
+.blog-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+/* Content */
+.blog-card p {
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+  flex: 1;
+}
+
+/* Footer */
+.blog-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.blog-date {
+  font-size: 12px;
+  color: #777;
+}
+
+.blog-footer button {
+  background: #e74c3c;
   border: none;
-  border-radius: 4px;
+  color: white;
+  border-radius: 16px;
+  padding: 6px 16px;
   cursor: pointer;
 }
 
-.blogs-list {
-  margin-top: 1.5rem;
+.blog-footer button:hover {
+  background: #c0392b;
 }
 
-.blog-card {
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  background-color: #f9f9f9;
+/* =========================
+   EMPTY / LOADING STATES
+========================= */
+.loading-message,
+.empty-message {
+  width: 100%;
+  text-align: center;
+  padding-top: 80px;
 }
 
-.blog-meta {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 0.5rem;
-}
-
-.delete-btn {
-  background-color: #f44336;
+.empty-message button {
+  margin-top: 14px;
+  background: #3f7f73;
   color: white;
   border: none;
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
+  border-radius: 20px;
+  padding: 8px 20px;
   cursor: pointer;
 }
 
+/* =========================
+   PAGINATION (BOTTOM)
+========================= */
 .pagination {
+  width: 100%;
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 28px;
 }
 
 .pagination button {
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
+  background: none;
   border: none;
+  font-size: 18px;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .pagination button:disabled {
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: not-allowed;
+}
+
+.pagination span {
+  font-weight: 600;
 }

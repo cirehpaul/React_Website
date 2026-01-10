@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBlogs, deleteBlog } from '../store/blogSlice';
-import { logout } from '../store/authSlice';
+import { logout } from '../feature/authThunks';
 import type { RootState, AppDispatch } from '../store/store';
 import { useNavigate } from 'react-router-dom';
 import '../styles/blogs.css';
-
 
 interface Blog {
   id: string;
@@ -15,11 +14,10 @@ interface Blog {
 }
 
 export default function Blogs() {
-  const dispatch = useDispatch<AppDispatch>(); 
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
- 
-  const blogs: Blog[] = useSelector((state: RootState) => state.blog.blogs);
+  const blogs = useSelector((state: RootState) => state.blog.blogs);
   const user = useSelector((state: RootState) => state.auth.user);
 
   const [page, setPage] = useState(1);
@@ -35,7 +33,7 @@ export default function Blogs() {
   }, [page, user, dispatch, navigate]);
 
   const handleLogout = () => {
-    dispatch(logout()); 
+    dispatch(logout());
     navigate('/login');
   };
 
@@ -46,42 +44,37 @@ export default function Blogs() {
   };
 
   return (
-    <div className="blogs-container">
-      <div className="blogs-header">
-        <h1>Blog Posts</h1>
-        <div className="action-buttons">
-          <button onClick={() => navigate('/blogs/create')}>Create Blog</button>
-          <button onClick={handleLogout}>🚪 Logout</button>
+    <div className="blogs-page">
+      
+      <div className="header">
+        <div className="name">CPBC</div>
+        <div className="actions">
+          <button onClick={() => navigate('/blogs/create')}>Create BLOG</button>
+          <button onClick={handleLogout}>LOGOUT</button>
         </div>
       </div>
 
       {loading ? (
-        <div className="loading-message">
-          <p>Loading blogs...</p>
-        </div>
+        <div className="loading-message">Loading blogs...</div>
       ) : blogs.length === 0 ? (
         <div className="empty-message">
-          <h3>No blogs found yet</h3>
-          <p>Start sharing your thoughts by creating your first blog post!</p>
-          <button onClick={() => navigate('/blogs/create')}>Create First Blog</button>
+          <h3>No blogs yet</h3>
+          <button onClick={() => navigate('/blogs/create')}>
+            Create First Blog
+          </button>
         </div>
       ) : (
-        <div className="blogs-list">
+        <div className="blog-container">
           {blogs.map(blog => (
             <div key={blog.id} className="blog-card">
               <h3>{blog.title}</h3>
               <p>{blog.content}</p>
-              <div className="blog-meta">
+
+              <div className="blog-footer">
                 <span className="blog-date">
-                  {new Date(blog.created_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
+                  {new Date(blog.created_at).toLocaleDateString()}
                 </span>
-                <button className="delete-btn" onClick={() => handleDelete(blog.id)}>
-                  Delete
-                </button>
+                <button onClick={() => handleDelete(blog.id)}>Delete</button>
               </div>
             </div>
           ))}
@@ -89,12 +82,20 @@ export default function Blogs() {
       )}
 
       <div className="pagination">
-        <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>
-          ← Previous
+        <button
+          onClick={() => setPage(p => Math.max(1, p - 1))}
+          disabled={page === 1}
+        >
+          &lt;
         </button>
-        <span>Page {page}</span>
-        <button onClick={() => setPage(p => p + 1)} disabled={blogs.length < 5}>
-          Next →
+
+        <span>● ● ●</span>
+
+        <button
+          onClick={() => setPage(p => p + 1)}
+          disabled={blogs.length < 5}
+        >
+          &gt;
         </button>
       </div>
     </div>
