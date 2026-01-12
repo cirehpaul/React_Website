@@ -55,23 +55,19 @@ export const fetchBlogs = createAsyncThunk(
 );
 
 // Delete blog
-export const deleteBlog = createAsyncThunk(
+export const deleteBlog = createAsyncThunk( 
   'blog/deleteBlog',
-  async ({ id}: { id: string }, { rejectWithValue }) => {
-    try { 
- const { data, error } = await supabase
-        .from('blogs')
-        .delete()
-        .eq('id', id)
-        .select();
-
-      if (error) throw error;
-      return data[0] as Blog;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to delete");
-    }
-  }
-);
+   async (id: string, { rejectWithValue }) => {
+     try { const { error } = await supabase
+     .from('blogs')
+     .delete()
+     .eq('id', id); 
+     if (error) 
+      throw error; 
+    return id;
+   } catch (err: any){ 
+    return rejectWithValue(err.message || "Failed to delete"); } } 
+  );
 
 //  Create blog
 export const createBlog = createAsyncThunk(
