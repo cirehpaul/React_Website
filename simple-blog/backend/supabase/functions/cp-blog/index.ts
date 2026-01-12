@@ -23,7 +23,7 @@ app.use(express.json());
 app.use('/api', authRoutes);
 app.use('/api/blogs', blogroutes);
 
-// Use the port from .env OR use 5000 as a backup
+// Use the port from .env OR use 5000 as a backup // this is for localhost testing only
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

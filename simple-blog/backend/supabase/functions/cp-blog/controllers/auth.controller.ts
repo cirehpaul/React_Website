@@ -1,6 +1,4 @@
 import type { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { supabase } from '../lib/supabase.ts';
 
 export const login = async (req: Request, res: Response) => {
