@@ -1,7 +1,9 @@
-import express from 'express';
 import cors from 'cors';
-import authRoutes from './routes/auth.routes.ts';
-import blogroutes from './routes/blogroutes.ts';
+import { register } from './controllers/auth.controller.ts';
+import { updateBlog,deleteBlog,fetchBlogs } from './controllers/blogsController.ts';
+import express from "npm:express@4.18.2";
+import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
+
 
 const app = express(); // Create API 
 
@@ -20,14 +22,34 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use('/api', authRoutes);
-app.use('/api/blogs', blogroutes);
 
-// Use the port from .env OR use 5000 as a backup // this is for localhost testing only
-const PORT = process.env.PORT || 5000;
+Deno.serve(async (req) => {
+  const url = new URL(req.url);
+  const path = url.pathname;
 
-app.listen(PORT, () => {
-  console.log(`✅ Backend active on port ${PORT}`);
-});
+  console.log(`Incoming request: ${req.method} to ${path}`);
 
-export default app;
+  // This logic ensures that even if you call /api/register, 
+  // the function will catch it instead of throwing a 'Cannot POST'
+  if (req.method === 'POST' && path.includes('/register')) {
+   // Call the exported handler 
+   return await register(req);
+  }
+
+  if (req.method === "PUT" && path.includes("/update-blog")) 
+    
+    { return await updateBlog(req); } 
+
+  if (req.method === "DELETE" && path.includes("/delete-blog")) 
+    { return await deleteBlog(req); } 
+
+  if (req.method === "GET" && path.includes("/fetch-blogs"))
+     { return await fetchBlogs(req); }
+
+  // Fallback so you don't get a generic error
+  return new Response(`Function is working, but path ${path} not found`, { status: 404 });
+})
+
+// Export handler
+serve(app);
+

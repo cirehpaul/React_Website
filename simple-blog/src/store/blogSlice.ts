@@ -25,6 +25,8 @@ const initialState: BlogState = {
   error: null,
 };
 
+const URL = process.env.MY_SIMPLE_BLOG_URL || 'http://localhost:5000/api/blogs';
+
 // Fetch blogs with pagination
 export const fetchBlogs = createAsyncThunk(
   'blog/fetchBlogs',
@@ -55,10 +57,16 @@ export const fetchBlogs = createAsyncThunk(
 // Delete blog
 export const deleteBlog = createAsyncThunk(
   'blog/deleteBlog',
-  async (id: string, { rejectWithValue }) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/blogs/${id}`);
-      return id; 
+  async ({ id}: { id: string }, { rejectWithValue }) => {
+    try { 
+ const { data, error } = await supabase
+        .from('blogs')
+        .delete()
+        .eq('id', id)
+        .select();
+
+      if (error) throw error;
+      return data[0] as Blog;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Failed to delete");
     }
@@ -87,8 +95,7 @@ export const createBlog = createAsyncThunk(
 );
 
 // Update blog
-export const updateBlog = createAsyncThunk(
-  'blog/updateBlog',
+export const updateBlog = createAsyncThunk( 'blog/updateBlog',
   async ({ id, title, content }: { id: string; title: string; content: string }, { rejectWithValue }) => {
     try {
       const { data, error } = await supabase
