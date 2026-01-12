@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { AppDispatch } from '../store/store';
-import { register } from '../feature/authThunks';
+import { register } from '../thunk/authThunks';
 import '../styles/register.css';
 
 const Register: React.FC = () => {
@@ -26,39 +26,21 @@ const Register: React.FC = () => {
     isGmailValid &&
     passwordsMatch;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (!isGmailValid) {
-      setError('Only Gmail addresses are allowed');
-      return;
-    }
+  try {
+    await dispatch(register({ email, password })).unwrap();
 
-    if (!passwordsMatch) {
-      setError('Passwords do not match');
-      return;
-    }
+    alert('Registration successful! Please check your email.');
+    navigate('/login');
 
-    try {
-      setLoading(true);
-      await dispatch(register({ email, password })).unwrap();
-
-      setSuccess('Account created successfully! Redirecting to login...');
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
-
-      setTimeout(() => {
-        navigate('/login', { state: { registered: true } });
-      }, 1500);
-    } catch (err: any) {
-      setError(err?.message || 'Registration failed');
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (err: any) {
+    console.error('Registration failed:', err);
+    
+    alert(err || 'Registration failed. Please try again.'); 
+  }
+};
 
   return (
     <div className="auth-page">
@@ -66,7 +48,7 @@ const Register: React.FC = () => {
         <h2>Create Account</h2>
 
         <form onSubmit={handleSubmit} noValidate>
-          {/* Email */}
+      
           <div className="form-group">
             <input
               type="email"
@@ -80,7 +62,6 @@ const Register: React.FC = () => {
             )}
           </div>
 
-          {/* Password */}
           <div className="form-group">
             <input
               type="password"
@@ -91,7 +72,6 @@ const Register: React.FC = () => {
             />
           </div>
 
-          {/* Confirm Password */}
           <div className="form-group">
             <input
               type="password"
@@ -105,15 +85,12 @@ const Register: React.FC = () => {
             )}
           </div>
 
-          {/* Global Messages */}
           {error && <p className="error">{error}</p>}
           {success && <p className="success">{success}</p>}
-
-          {/* Submit */}
-          <button type="submit" disabled={!isFormValid || loading}>
+           <button type="submit" disabled={!isFormValid || loading}>
             {loading ? 'Creating account...' : 'Register'}
           </button>
-        </form>
+      </form>
 
         <p className="form-toggle">
           Already have an account?{' '}

@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import type { AuthState } from './authTypes';
-import { login, register, logout } from './authThunks';
+import { login, register, logout } from '../thunk/authThunks';
 
+// 1. Use the initialState you already defined above
 const initialState: AuthState = {
   user: null,
   loading: false,
@@ -11,42 +13,46 @@ const initialState: AuthState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    clearError: (state) => {
+      state.error = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
-      // Register
-      .addCase(register.pending, (s) => {
-        s.loading = true;
-        s.error = null;
+      .addCase(login.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(register.fulfilled, (s, a) => {
-        s.loading = false;
-        s.user = a.payload;
+      .addCase(login.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.user = action.payload; 
+        state.error = null;
       })
-      .addCase(register.rejected, (s, a) => {
-        s.loading = false;
-        s.error = a.payload ?? 'Registration failed';
+      .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
-
-      // Login
-      .addCase(login.pending, (s) => {
-        s.loading = true;
-        s.error = null;
+      .addCase(register.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(login.fulfilled, (s, a) => {
-        s.loading = false;
-        s.user = a.payload;
+      .addCase(register.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.user = action.payload;
       })
-      .addCase(login.rejected, (s, a) => {
-        s.loading = false;
-        s.error = a.payload ?? 'Login failed';
+      .addCase(register.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
 
-      // Logout
-      .addCase(logout.fulfilled, (s) => {
-        s.user = null;
+      /* --- LOGOUT CASE --- */
+      .addCase(logout.fulfilled, (state) => {
+        state.user = null;
+        state.error = null;
       });
   },
 });
 
+export const { clearError } = authSlice.actions;
 export default authSlice.reducer;

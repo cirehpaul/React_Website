@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { AppDispatch } from '../store/store';
-import { login } from '../feature/authThunks';
+import { login } from '../thunk/authThunks';
 import '../styles/login.css';
 
 

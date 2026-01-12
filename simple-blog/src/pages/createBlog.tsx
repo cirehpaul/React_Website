@@ -15,29 +15,28 @@ export default function CreateBlog() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  if (!user) {
-    return (
-      <div className="create-blog-page">
-        <div className="not-logged-in">
-          <h2>You are not logged in</h2>
-          <button onClick={() => navigate('/login')}>Go to Login</button>
-        </div>
-      </div>
-    );
-  }
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) setImagePreview(URL.createObjectURL(file));
   };
 
-  const handlePublish = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    await dispatch(createBlog({ title, content }));
+const handlePublish = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  if (!title.trim() || !content.trim()) return;
+
+  setLoading(true);
+  try {
+    await dispatch(createBlog({ title, content })).unwrap();
+    
+    navigate('/blogs'); 
+  } catch (err: any) {
+    console.error("Failed to save blog:", err);
+    alert(err || "Failed to publish blog. Check your Supabase RLS policies.");
+  } finally {
     setLoading(false);
-    navigate('/blogs');
-  };
+  }
+};
 
   return (
     <div className="create-blog-page">
@@ -46,15 +45,6 @@ export default function CreateBlog() {
         <p className="subtitle">Share your thoughts with the world</p>
 
         <form className="create-form" onSubmit={handlePublish}>
-          <div className="image-upload">
-            {imagePreview ? (
-              <img src={imagePreview} alt="Preview" />
-            ) : (
-              <span>Upload cover image</span>
-            )}
-            <input type="file" accept="image/*" onChange={handleImageChange} />
-          </div>
-
           <div className="form-group">
             <label>Title</label>
             <input
