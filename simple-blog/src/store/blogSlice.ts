@@ -57,7 +57,7 @@ export const fetchBlogs = createAsyncThunk(
 // Delete blog
 export const deleteBlog = createAsyncThunk( 
   'blog/deleteBlog',
-   async (id: string, { rejectWithValue }) => {
+   async ({ id }: { id: string }, { rejectWithValue }) => {
      try { const { error } = await supabase
      .from('blogs')
      .delete()
