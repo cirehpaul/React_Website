@@ -1,4 +1,3 @@
-// If the file is in src/lib/
 import { supabase } from '../lib/supabase'; 
 
 export const getBlogs = async () => {

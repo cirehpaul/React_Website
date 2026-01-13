@@ -3,7 +3,6 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { AuthState } from './authTypes';
 import { login, register, logout } from '../thunk/authThunks';
 
-// 1. Use the initialState you already defined above
 const initialState: AuthState = {
   user: null,
   loading: false,
@@ -46,7 +45,6 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      /* --- LOGOUT CASE --- */
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
         state.error = null;

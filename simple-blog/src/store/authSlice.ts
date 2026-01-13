@@ -17,18 +17,16 @@ const initialState: AuthState = {
   error: null,
 };
 
-// Simulated login API
 export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }: { email: string; password: string }) => {
-    //  API delay
+  
     await new Promise((res) => setTimeout(res, 500));
     if (!email || !password) throw new Error('Invalid credentials');
     return { id: '1', email } as User;
   }
 );
 
-// Simulated register API
 export const register = createAsyncThunk(
   'auth/register',
   async ({ email, password }: { email: string; password: string }) => {

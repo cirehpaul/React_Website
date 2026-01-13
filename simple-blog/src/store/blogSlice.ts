@@ -52,7 +52,6 @@ export const fetchBlogs = createAsyncThunk(
   }
 );
 
-// Delete blog
 export const deleteBlog = createAsyncThunk( 
   'blog/deleteBlog',
    async (id: string, { rejectWithValue }) => {
@@ -67,7 +66,6 @@ export const deleteBlog = createAsyncThunk(
     return rejectWithValue(err.message || "Failed to delete"); } } 
   );
 
-//  Create blog
 export const createBlog = createAsyncThunk(
   'blog/createBlog',
   async ({ title, content }: { title: string; content: string }, { rejectWithValue }) => {
@@ -88,7 +86,6 @@ export const createBlog = createAsyncThunk(
   }
 );
 
-// Update blog
 export const updateBlog = createAsyncThunk(
   'blog/updateBlog',
   async ({ id, title, content }: { id: string; title: string; content: string }, { rejectWithValue }) => {
@@ -113,18 +110,15 @@ const blogSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // When the request starts
       .addCase(fetchBlogs.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      // When the request succeeds
       .addCase(fetchBlogs.fulfilled, (state, action: PayloadAction<{ blogs: Blog[]; totalCount: number }>) => {
         state.loading = false;
         state.blogs = action.payload.blogs;     
         state.totalCount = action.payload.totalCount; 
       })
-      // When the request fails
       .addCase(fetchBlogs.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;

@@ -8,11 +8,10 @@ import ProtectedRoute from './route/protectedRoute';
 function App() {
   return (
     <Routes>
-      {/* Public Routes */}
+
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* Protected Routes */}
       <Route 
         path="/blogs" 
         element={
@@ -31,7 +30,6 @@ function App() {
         } 
       />
 
-      {/* Default redirect if route not found */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
